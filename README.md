@@ -38,15 +38,63 @@ git: 2.53.0 <br>
 <br>
 
 ## 프로젝트 구조
+
+MiniNPU/ <br>
+│ <br>
+├── main.py <br>
+├── data.py <br>
+├── calc.py <br>
+├── eval.py<br>
+├── benchmark.py<br>
+├── json_analyzer.py<br>
+│<br>
+├── data.json<br>
+│<br>
+└── README.md<br>
+
 ### InputData 클래스
 - 데이터를 입력 받거나, json 파일로부터 로드해올 수 있다.
 - 입력받은 데이터를 리스트에 저장한다.
 - 라벨이 존재할 경우, 정규화를 진행한다.
+
+data.py<br>
+├── InputData<br>
+│   ├── sizeinput()<br>
+│   ├── rowinput()<br>
+│   └── patterninput()<br>
+│<br>
+├── LoadData<br>
+│   └── load()<br>
+│<br>
+├── SaveData<br>
+│   └── save()<br>
+│<br>
+└── NormalizeData<br>
+    └── norm_label()<br>
+
 ### Analyze 클래스
 - 저장한 데이터를 MAC 연산을 통해 계산한다.
+
+calc.py<br>
+└── Analyze<br>
+    └── mac_calculate()<br>
+
+
 ### Evaluate 클래스
 - 연산 결과를 분석하고, 출력한다. 
 
+
+eval.py<br>
+└── Evaluator<br>
+    ├── judge()<br>
+    └── compare_expected()<br>
+### Benchmark.py
+
+benchmark.py<br>
+└── Benchmark<br>
+    └── measure()<br>
+
+    
 <br> <br>
 
 ## 구현 요약 

@@ -1,87 +1,185 @@
+import json
+
+
 def numinput(prompt):
+    """숫자를 입력받아 float으로 반환한다."""
     while True:
-        try: 
-            answer = input(prompt).strip()
-            answer = int(answer)
-        except(ValueError):
-            print("정수를 입력해주세요.")
+        value = input(prompt)
+
+        try:
+            return float(value)
+        except ValueError:
+            print("숫자를 입력해주세요.")
+
 
 class InputData:
+    """콘솔에서 패턴/필터 데이터를 입력받는 클래스"""
+
     def __init__(self):
         pass
 
-    #데이터 수집
+    def sizeinput(self):
+        """양의 정수 크기 N을 입력받는다."""
+        while True:
+            value = input("n의 값을 입력하세요.: ")
+
+            try:
+                size = int(value)
+
+                if size <= 0:
+                    print("크기는 1 이상의 정수여야 합니다.")
+                    continue
+
+                return size
+
+            except ValueError:
+                print("크기는 정수로 입력해주세요.")
+
+    def rowinput(self, row_number, size):
+        """한 행을 입력받아 float 리스트로 반환한다."""
+
+        while True:
+            print(f"공백으로 {size}개의 열을 구분합니다.")
+
+            value = input(
+                f"{row_number}번째 행을 입력해주세요.: "
+            )
+
+            split_value = value.split()
+
+            # 열 개수 검사
+            if len(split_value) != size:
+                print(
+                    f"입력 형식 오류: "
+                    f"각 줄에 {size}개의 숫자를 공백으로 구분해 입력하세요."
+                )
+                continue
+
+            row = []
+
+            # 숫자 검사
+            try:
+                for value in split_value:
+                    row.append(float(value))
+
+            except ValueError:
+                print("입력 형식 오류: 숫자가 아닌 값이 발견되었습니다.")
+                continue
+
+            print(f"{row_number}번째 행이 입력되었습니다.")
+            return row
+
     def patterninput(self):
-        # 패턴인지 필터인지도 
-        #3개 한번에 해도? 
+        """N x N 크기의 패턴을 입력받는다."""
 
         print("패턴과 필터는 n*n 크기의 정사각형 모양을 갖습니다.")
-        size = numinput("n의 값을 입력하세요.: ")
-        pattern = []
-        for i in range(size):
-            r = self.rowinput(size)
-            pattern.append(r)
-        if len(pattern)!= size:
-            print("행 열의 크기가 옳지 않습니다. 다시 시도하세요.")
-        else:
-            print("정상 입력되었습니다.")
-            #패턴 프린트
-            #세이브
-        #열행개수맞나 봄
-        #공백 구별
-        pass
 
-    def rowinput(self, i, size):
-        while True:
-            print("공백으로 열을 구분합니다.")
-            a = input(f"{i}번째 행을 입력해주세요.: ")
-            spliteda = a.split()
+        size = self.sizeinput()
 
-            checkint = 0 
-            for A in spliteda: 
-                try:
-                    int(A)
-                except ValueError:
-                    print("숫자가 아닌 값이 발견 되었습니다.")
-                    checkint =1
-                    break 
-            if checkint == 1:
-                continue
+        matrix = []
 
-            if len(spliteda) != size:
-                print(f"{size}개의 열을 입력해야 합니다.")
-                continue
+        for row_number in range(1, size + 1):
+            row = self.rowinput(row_number, size)
+            matrix.append(row)
 
-            print(f"{i}번째 행이 입력되었습니다.")
-            break
-        pass
+        print("정상 입력되었습니다.")
 
+        return matrix
 
 class LoadData:
-    def __init__(self):
-        pass
+    """JSON 데이터를 읽어오는 클래스"""
+
+    def __init__(self, filename="data.json"):
+        self.filename = filename
 
     def load(self):
-        #json 파일 읽어옴
-        pass
+        """data.json을 읽어서 Python 객체로 반환한다."""
+
+        try:
+            with open(self.filename, "r", encoding="utf-8") as file:
+                return json.load(file)
+
+        except FileNotFoundError:
+            print(f"파일을 찾을 수 없습니다: {self.filename}")
+            return None
+
+        except json.JSONDecodeError:
+            print(f"JSON 형식이 올바르지 않습니다: {self.filename}")
+            return None
 
 
-class SaveData: 
+class SaveData:
+    """데이터를 JSON으로 저장하는 클래스"""
+
+    def __init__(self, filename="data.json"):
+        self.filename = filename
+
+    def save(self, data):
+        """Python 데이터를 JSON 파일로 저장한다."""
+
+        try:
+            with open(self.filename, "w", encoding="utf-8") as file:
+                json.dump(
+                    data,
+                    file,
+                    ensure_ascii=False,
+                    indent=4
+                )
+
+            print(f"데이터가 저장되었습니다: {self.filename}")
+            return True
+
+        except OSError as error:
+            print(f"파일 저장 중 오류가 발생했습니다: {error}")
+            return False
+
+
+class NormalizeData:
+    """데이터의 라벨을 프로그램 내부 표준 라벨로 변환한다."""
+
+    LABEL_MAP = {
+        "+": "Cross",
+        "cross": "Cross",
+        "x": "X"
+    }
+
     def __init__(self):
         pass
 
-    def save(self):
-        #저장함..
-        #pattern
-        #filter
-        #expected는 있을 수도 없을수도 사이즈별로정리하는게좋수도 아닐수도 
-        pass
+    def norm_label(self, label):
+        """
+        입력 라벨을 표준 라벨로 변환한다.
 
-class normalizeData:
-    def __init__(self):
-        pass
+        + / cross -> Cross
+        x -> X
+        """
 
-    #데이터 전처리
-    def norm_label():
-        #라벨 정규화 
-        pass
+        if not isinstance(label, str):
+            return None
+
+        label = label.strip().lower()
+
+        return self.LABEL_MAP.get(label)
+
+    def normalize_filter_key(self, key):
+        """
+        filter의 키에서 Cross/X 라벨을 표준화한다.
+
+        예:
+        cross -> Cross
+        x -> X
+        """
+
+        if not isinstance(key, str):
+            return None
+
+        # size_5_cross 같은 키가 들어오는 경우를 대비
+        parts = key.lower().split("_")
+
+        if "cross" in parts:
+            return "Cross"
+
+        if "x" in parts:
+            return "X"
+
+        return None
