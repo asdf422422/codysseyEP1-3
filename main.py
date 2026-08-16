@@ -13,31 +13,39 @@ def run_user_mode():
     benchmark = Benchmark(analyzer)
 
     # --------------------------------
+    # 크기 N은 한 번만 입력
+    # --------------------------------
+    print("\n[입력 크기]")
+    size = input_data.sizeinput()
+
+    print(f"\n모든 입력은 {size} x {size} 크기로 입력합니다.")
+
+    # --------------------------------
     # 필터 A 입력
     # --------------------------------
     print("\n[필터 A 입력]")
-    filter_a = input_data.patterninput()
+    filter_a = input_data.matrixinput(
+        size,
+        "필터 A"
+    )
 
     # --------------------------------
     # 필터 B 입력
     # --------------------------------
     print("\n[필터 B 입력]")
-    filter_b = input_data.patterninput()
-
-    # 필터 크기 확인
-    if len(filter_a) != len(filter_b):
-        print("오류: 필터 A와 B의 크기가 다릅니다.")
-        return
+    filter_b = input_data.matrixinput(
+        size,
+        "필터 B"
+    )
 
     # --------------------------------
     # 패턴 입력
     # --------------------------------
     print("\n[패턴 입력]")
-    pattern = input_data.patterninput()
-
-    if len(pattern) != len(filter_a):
-        print("오류: 패턴과 필터의 크기가 다릅니다.")
-        return
+    pattern = input_data.matrixinput(
+        size,
+        "패턴"
+    )
 
     # --------------------------------
     # MAC 계산
@@ -55,10 +63,14 @@ def run_user_mode():
     # --------------------------------
     # 판정
     # --------------------------------
-    result = evaluator.judge(
-        score_a,
-        score_b
-    )
+    if score_a > score_b:
+        result = "필터 A"
+
+    elif score_b > score_a:
+        result = "필터 B"
+
+    else:
+        result = "판정 불가 (동점)"
 
     print("\n===== MAC 결과 =====")
     print(f"필터 A 점수 : {score_a}")
@@ -74,7 +86,7 @@ def run_user_mode():
     )
 
     print("\n===== 성능 분석 =====")
-    print(f"크기             : {len(pattern)} x {len(pattern)}")
+    print(f"크기             : {size} x {size}")
     print(f"평균 연산 시간   : {average:.6f} ms")
     print(f"연산 횟수        : {operation_count}")
 
@@ -421,7 +433,7 @@ def main():
     while True:
 
         print("\n실행 모드를 선택하세요.")
-        print("1. 사용자 입력 (3x3)")
+        print("1. 사용자 입력")
         print("2. data.json 분석")
         print("0. 종료")
 

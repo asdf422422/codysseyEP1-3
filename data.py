@@ -39,15 +39,12 @@ class InputData:
         """한 행을 입력받아 float 리스트로 반환한다."""
 
         while True:
-            print(f"공백으로 {size}개의 열을 구분합니다.")
-
             value = input(
                 f"{row_number}번째 행을 입력해주세요.: "
             )
 
             split_value = value.split()
 
-            # 열 개수 검사
             if len(split_value) != size:
                 print(
                     f"입력 형식 오류: "
@@ -57,7 +54,6 @@ class InputData:
 
             row = []
 
-            # 숫자 검사
             try:
                 for value in split_value:
                     row.append(float(value))
@@ -69,12 +65,10 @@ class InputData:
             print(f"{row_number}번째 행이 입력되었습니다.")
             return row
 
-    def patterninput(self):
-        """N x N 크기의 패턴을 입력받는다."""
+    def matrixinput(self, size, name="데이터"):
+        """지정된 크기의 N x N 행렬을 입력받는다."""
 
-        print("패턴과 필터는 n*n 크기의 정사각형 모양을 갖습니다.")
-
-        size = self.sizeinput()
+        print(f"{name}을(를) {size} x {size} 크기로 입력합니다.")
 
         matrix = []
 
@@ -82,9 +76,18 @@ class InputData:
             row = self.rowinput(row_number, size)
             matrix.append(row)
 
-        print("정상 입력되었습니다.")
+        print(f"{name} 입력이 완료되었습니다.")
 
         return matrix
+
+    def patterninput(self):
+        """N x N 크기의 패턴을 입력받는다."""
+
+        print("패턴과 필터는 n*n 크기의 정사각형 모양을 갖습니다.")
+
+        size = self.sizeinput()
+
+        return self.matrixinput(size, "패턴")
 
 class LoadData:
     """JSON 데이터를 읽어오는 클래스"""
